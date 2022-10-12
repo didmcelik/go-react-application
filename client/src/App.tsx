@@ -1,10 +1,9 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { useEffect, useState } from "react";
 import "./App.css";
-import { Box, Button, Group, Modal } from "@mantine/core";
+import { Button, Grid, Text } from "@mantine/core";
 import useSWR from "swr";
 import UserModal from "./components/UserModal";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Stack } from "@mui/material";
 export interface User {
   id: number;
@@ -17,11 +16,11 @@ const fetcher = (url: string) =>
   fetch(`${ENDPOINT}/${url}`).then((r) => r.json());
 
 function App() {
-  const { data, mutate } = useSWR<User[]>("getAll", fetcher);
+  const { data, mutate } = useSWR<any>("getAll", fetcher);
   const [open, setOpen] = useState(false);
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 90 },
+    { field: "id", headerName: "ID", width: 250 },
     {
       field: "username",
       headerName: "User name",
@@ -31,7 +30,7 @@ function App() {
     {
       field: "email",
       headerName: "E-mail",
-      width: 250,
+      width: 200,
       editable: true,
     },
     {
@@ -54,11 +53,12 @@ function App() {
                 onClick={() => {
                   setEditModal(true);
                 }}
+                variant="light"
               >
                 Edit
               </Button>
               <Button
-                variant="outline"
+                variant="subtle"
                 ml={2}
                 onClick={() => {
                   setDeleteModal(true);
@@ -92,33 +92,85 @@ function App() {
       },
     },
   ];
-  return (
-    <Box>
-      {!!data && (
-        <Box sx={{ height: 400, width: 800, backgroundColor: "white" }}>
-          <DataGrid
-            rows={data as User[]}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            checkboxSelection
-            disableSelectionOnClick
-            experimentalFeatures={{ newEditingApi: true }}
-          />
-        </Box>
-      )}
-      {/* <UserModal mutate={mutate}></UserModal> */}
 
-      <Group position="center">
+  return (
+    <Grid
+      sx={{
+        height: 500,
+        width: 900,
+        backgroundColor: "white",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Grid
+        sx={{
+          justifyContent: "space-between",
+          width: "100%",
+        }}
+      >
+        <Text
+          color="gray"
+          component="span"
+          align="center"
+          variant="gradient"
+          weight={900}
+          gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+          style={{
+            fontFamily: "Greycliff CF, sans-serif",
+            marginLeft: 15,
+          }}
+        >
+          USERS
+        </Text>
         <Button
-          fullWidth
           onClick={() => {
             setOpen(true);
           }}
+          size="sm"
+          style={{ marginRight: 5 }}
+          variant="gradient"
         >
-          ADD USER
+          NEW
         </Button>
-      </Group>
+      </Grid>
+
+      <Grid
+        sx={{
+          height: 400,
+          width: 900,
+          backgroundColor: "white",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {!!data?.data?.data ? (
+          <DataGrid
+            sx={{ p: 1 }}
+            checkboxSelection={false}
+            rows={data?.data?.data}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            experimentalFeatures={{ newEditingApi: true }}
+          />
+        ) : (
+          <Text
+            color="gray"
+            component="span"
+            align="center"
+            variant="gradient"
+            weight={500}
+            gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+            style={{
+              fontFamily: "Greycliff CF, sans-serif",
+            }}
+          >
+            No Data
+          </Text>
+        )}
+      </Grid>
 
       {open && (
         <UserModal
@@ -128,7 +180,7 @@ function App() {
           setOpen={setOpen}
         ></UserModal>
       )}
-    </Box>
+    </Grid>
   );
 }
 

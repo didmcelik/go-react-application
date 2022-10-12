@@ -12,7 +12,7 @@ function UserModal({
   open,
   setOpen,
 }: {
-  mutate: KeyedMutator<User[]>;
+  mutate: KeyedMutator<any>; //  KeyedMutator<User[]>
   edit?: boolean;
   del?: boolean;
   user?: User;
@@ -36,23 +36,17 @@ function UserModal({
   async function createUser(values: { username: string; email: string }) {
     let updated;
     if (edit && !del) {
-      updated = await fetch(
-        `${ENDPOINT}/update/${user?.id}/${values.username}`,
-        {
-          method: "PATCH",
-          // headers: {
-          //   "Content-Type": "application/json",
-          // },
-          // body: JSON.stringify(values),
-        }
-      ).then((r) => r.json());
+      updated = await fetch(`${ENDPOINT}/update/${user?.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }).then((r) => r.json());
+      console.log("updated", updated);
     } else if (edit && del) {
       updated = await fetch(`${ENDPOINT}/delete/${user?.id}`, {
         method: "DELETE",
-        // headers: {
-        //   "Content-Type": "application/json",
-        // },
-        // body: JSON.stringify(values),
       }).then((r) => r.json());
     } else {
       updated = await fetch(`${ENDPOINT}/create`, {
@@ -64,7 +58,7 @@ function UserModal({
       }).then((r) => r.json());
     }
 
-    mutate(updated);
+    mutate("getAll"); // must be updated?
     form.reset();
     setOpen(false);
   }
@@ -90,19 +84,20 @@ function UserModal({
             {...form.getInputProps("username")}
           ></TextInput>
           <TextInput
-            disabled={del || edit}
-            required55
+            disabled={del}
+            required
             mb={12}
             label={"Email"}
             placeholder={"johnnynelson@abc.com"}
             {...form.getInputProps("email")}
           ></TextInput>
 
-          <Button type="submit">
+          <Button type="submit" size="sm">
             {edit ? (del ? "Delete" : "Save") : "Create"}
           </Button>
           <Button
             ml={1}
+            size="sm"
             variant="outline"
             onClick={() => {
               setOpen(false);
