@@ -3,7 +3,8 @@
 To run server :
 
 - go run main.go
-  Server listens port 4000.
+
+Server listens port 4000.
 
 To run client :
 
