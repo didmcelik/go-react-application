@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
 import { useForm } from "@mantine/form";
 import { Button, Group, Modal, Textarea, TextInput } from "@mantine/core";
 import { ENDPOINT, User } from "../App";
@@ -22,7 +21,6 @@ function UserModal({
   useEffect(() => {
     if (edit) {
       form.setValues({ email: user?.email, username: user?.username });
-      //setOpen(true);
     }
   }, []);
 
@@ -43,7 +41,6 @@ function UserModal({
         },
         body: JSON.stringify(values),
       }).then((r) => r.json());
-      console.log("updated", updated);
     } else if (edit && del) {
       updated = await fetch(`${ENDPOINT}/delete/${user?.id}`, {
         method: "DELETE",
@@ -58,7 +55,7 @@ function UserModal({
       }).then((r) => r.json());
     }
 
-    mutate("getAll"); // must be updated?
+    mutate("getAll"); // must be (updated)?
     form.reset();
     setOpen(false);
   }

@@ -173,7 +173,7 @@ func GetAllUser() http.HandlerFunc {
 
 	return func(rw http.ResponseWriter, r *http.Request) {
 		//rw.Header().Set("Content-Type", "application/x-www-form-urlencode")
-		rw.Header().Set("Allow-Control-Allow-Methods", "GET")
+		//rw.Header().Set("Allow-Control-Allow-Methods", "GET")
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		var users []models.User
 		defer cancel()
