@@ -16,7 +16,7 @@ const fetcher = (url: string) =>
   fetch(`${ENDPOINT}/${url}`).then((r) => r.json());
 
 function App() {
-  const { data, mutate } = useSWR<any>("getAll", fetcher);
+  const { data, mutate, error } = useSWR<any>("getAll", fetcher);
   const [open, setOpen] = useState(false);
 
   const columns: GridColDef[] = [
@@ -144,32 +144,16 @@ function App() {
           justifyContent: "center",
         }}
       >
-        {!!data?.data?.data ? (
-          <DataGrid
-            sx={{ p: 1 }}
-            checkboxSelection={false}
-            rows={data?.data?.data}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            experimentalFeatures={{ newEditingApi: true }}
-          />
-        ) : (
-          <Text
-            color="gray"
-            component="span"
-            align="center"
-            variant="gradient"
-            weight={500}
-            gradient={{ from: "indigo", to: "cyan", deg: 45 }}
-            style={{
-              fontFamily: "Greycliff CF, sans-serif",
-            }}
-          >
-            No Data
-          </Text>
-        )}
+        <DataGrid
+          sx={{ p: 1 }}
+          checkboxSelection={false}
+          rows={data?.data?.data || []}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          experimentalFeatures={{ newEditingApi: true }}
+        />
       </Grid>
 
       {open && (
